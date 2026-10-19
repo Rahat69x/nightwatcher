@@ -9,6 +9,7 @@ let allAlerts = [];
 let pollTimer = null;
 
 document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
   fetchDashboardData();
   // Poll every 3 seconds for hackathon responsiveness
   pollTimer = setInterval(fetchDashboardData, 3000);
@@ -704,6 +705,147 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     closeMobileMenu();
     closeModal();
+    closeTourModal();
   }
 });
+
+// ── Theme Preferences & Mode Switcher ───────────────────
+function initTheme() {
+  let theme = 'dark';
+  try {
+    theme = localStorage.getItem('nw_theme') || 'dark';
+  } catch (e) {}
+  document.documentElement.setAttribute('data-theme', theme);
+  const metaScheme = document.querySelector('meta[name="color-scheme"]');
+  if (metaScheme) metaScheme.content = theme;
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme') || 'dark';
+  const target = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', target);
+  try {
+    localStorage.setItem('nw_theme', target);
+  } catch (e) {}
+  const metaScheme = document.querySelector('meta[name="color-scheme"]');
+  if (metaScheme) metaScheme.content = target;
+  showToast(`Switched to ${target === 'dark' ? 'Dark' : 'Light'} Mode`, 'info');
+}
+
+window.addEventListener('storage', (e) => {
+  if (e.key === 'nw_theme' && e.newValue) {
+    document.documentElement.setAttribute('data-theme', e.newValue);
+  }
+});
+
+// ── Smooth Scrolling Helpers ────────────────────────────
+function scrollToSim() {
+  const sim = document.getElementById('demo-simulator');
+  if (sim) {
+    sim.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+// ── Product Tour Walkthrough Modal ──────────────────────
+let currentTourStep = 0;
+const tourSteps = [
+  {
+    badge: 'STEP 1 OF 3',
+    title: 'Design-First Security Canvas',
+    text: 'NightWatcher acts as an autonomous design canvas running on your codebase. Every layer is a production guardrail that continuously monitors brute force logins, website uptime & SSL, phishing messages, and leaked credentials.',
+    highlightIcon: '🎨',
+    highlightTitle: 'Continuous Watchdogs',
+    highlightSub: 'Shared alert engine powering 4 focused watchers with zero config.'
+  },
+  {
+    badge: 'STEP 2 OF 3',
+    title: 'Self-Healing Auto-Block Engine',
+    text: 'When brute force or credential stuffing is detected, NightWatcher takes the first response autonomously by blocking the offending IP, resolving immediate threats before waking a human.',
+    highlightIcon: '⚡',
+    highlightTitle: 'Autonomous Enforcement',
+    highlightSub: 'Attacking IPs blocked on the spot with sliding expiration timers.'
+  },
+  {
+    badge: 'STEP 3 OF 3',
+    title: 'Tiered Multi-Channel Escalation',
+    text: 'If an attack continues or succeeds, alerts escalate in plain language: Email for low/med, interactive Telegram for high, and urgent SMS & Voice Calls that ring your phone at 3 AM.',
+    highlightIcon: '🚨',
+    highlightTitle: 'Always Watching. Loudest When It Matters.',
+    highlightSub: 'Interactive phone controls allow you to acknowledge or block right from your phone.'
+  }
+];
+
+function openTourModal() {
+  currentTourStep = 0;
+  renderTourStep();
+  const modal = document.getElementById('tour-modal');
+  if (modal) modal.classList.add('active');
+}
+
+function closeTourModal(event) {
+  const modal = document.getElementById('tour-modal');
+  if (modal) modal.classList.remove('active');
+}
+
+function renderTourStep() {
+  const step = tourSteps[currentTourStep];
+  if (!step) return;
+
+  const badgeEl = document.getElementById('tour-step-badge');
+  const titleEl = document.getElementById('tour-modal-title');
+  const textEl = document.getElementById('tour-modal-text');
+  if (badgeEl) badgeEl.textContent = step.badge;
+  if (titleEl) titleEl.textContent = step.title;
+  if (textEl) textEl.textContent = step.text;
+
+  const hl = document.getElementById('tour-modal-highlight');
+  if (hl) {
+    hl.innerHTML = `
+      <span class="tour-highlight-icon">${step.highlightIcon}</span>
+      <div>
+        <b style="color:var(--text-primary); display:block; margin-bottom:2px;">${escapeHtml(step.highlightTitle)}</b>
+        <span style="font-size:0.82rem; color:var(--text-secondary);">${escapeHtml(step.highlightSub)}</span>
+      </div>
+    `;
+  }
+
+  // Dots
+  const dots = document.getElementById('tour-dots');
+  if (dots) {
+    dots.innerHTML = tourSteps.map((_, i) =>
+      `<span class="tour-dot ${i === currentTourStep ? 'active' : ''}"></span>`
+    ).join('');
+  }
+
+  // Back button
+  const prevBtn = document.getElementById('btn-tour-prev');
+  if (prevBtn) {
+    prevBtn.style.display = currentTourStep > 0 ? 'inline-flex' : 'none';
+  }
+
+  // Next button text
+  const nextBtn = document.getElementById('btn-tour-next');
+  if (nextBtn) {
+    nextBtn.textContent = currentTourStep === tourSteps.length - 1 ? 'Finish & Explore' : 'Next';
+  }
+}
+
+function nextTourStep() {
+  if (currentTourStep < tourSteps.length - 1) {
+    currentTourStep++;
+    renderTourStep();
+  } else {
+    closeTourModal();
+    scrollToSim();
+    showToast('Explore the interactive watchdog simulator below!', 'info');
+  }
+}
+
+function prevTourStep() {
+  if (currentTourStep > 0) {
+    currentTourStep--;
+    renderTourStep();
+  }
+}
+
 

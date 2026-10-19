@@ -4,7 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="NightWatcher — Automated, self-healing security operations center. Monitors brute-force logins, website uptime & SSL, suspicious phishing messages, and leaked credentials with autonomous auto-blocking.">
-  <meta name="theme-color" content="#090d16">
+  <meta name="theme-color" content="#070a13">
+  <meta name="color-scheme" content="dark light">
+  <script>
+    (function() {
+      try {
+        var savedTheme = localStorage.getItem('nw_theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      } catch (e) {}
+    })();
+  </script>
   <meta property="og:title" content="NightWatcher — Always Watching. Loudest When It Matters.">
   <meta property="og:description" content="Autonomous cybersecurity watchdog with tiered escalation: Email, Telegram, SMS & Voice Calls.">
   <meta property="og:type" content="website">
@@ -18,7 +27,7 @@
 </head>
 <body>
   <div class="app-layout">
-    <!-- Top Navigation Bar -->
+    <!-- Top Navigation Bar (Inspired by Marquee Studio) -->
     <header class="top-nav">
       <a href="/" class="brand" aria-label="NightWatcher Home — Return to top" onclick="if(window.location.pathname === '/' || window.location.pathname === '/dashboard') { window.scrollTo({top: 0, behavior: 'smooth'}); return false; }">
         <div class="logo-shield">
@@ -36,17 +45,49 @@
         </div>
       </a>
 
+      <!-- Desktop Navigation Menu -->
+      <nav class="desktop-nav-links" aria-label="Primary Navigation">
+        <a href="#hero-canvas" class="desktop-nav-link active-link">Studio Canvas</a>
+        <a href="#demo-simulator" class="desktop-nav-link" onclick="scrollToSim()">Simulator</a>
+        <a href="#tab-alerts" class="desktop-nav-link" onclick="switchTab('tab-alerts')">Alert Incidents</a>
+        <a href="#tab-tools" class="desktop-nav-link" onclick="switchTab('tab-tools')">Security Tools</a>
+        <a href="/docs" class="desktop-nav-link" target="_blank" rel="noopener">API Docs</a>
+      </nav>
+
       <div class="nav-controls">
         <div class="status-indicator online">
           <span class="status-ring"></span>
           <span>Watchdog: Online</span>
         </div>
-        <button id="btn-refresh" class="btn btn-secondary btn-sm" onclick="fetchDashboardData()">
+
+        <!-- Light / Dark Mode Toggle -->
+        <button id="theme-toggle" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle Light and Dark Mode" title="Toggle Theme (Light / Dark)">
+          <svg class="theme-icon-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="theme-icon-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+
+        <a href="/docs" class="nav-signin-link" target="_blank" rel="noopener">Sign in</a>
+        <a href="#demo-simulator" class="nav-cta-btn" onclick="scrollToSim()">Start designing</a>
+
+        <button id="btn-refresh" class="btn btn-secondary btn-sm" onclick="fetchDashboardData()" title="Sync Live Data">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
           </svg>
           Sync
         </button>
+
         <button id="btn-mobile-menu" class="btn-hamburger" onclick="toggleMobileMenu()" aria-label="Toggle Navigation Menu" aria-expanded="false">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="3" y1="12" x2="21" y2="12"></line>
@@ -57,8 +98,183 @@
       </div>
     </header>
 
+    <!-- Hero Section (Aceternity UI Product Landing Page Redesign) -->
+    <section class="hero-section" id="hero-canvas">
+      <a href="#demo-simulator" class="hero-badge" onclick="scrollToSim()">
+        <span class="badge-tag">v1.0</span>
+        <span class="badge-text">Live components are here <span class="arrow">→</span></span>
+      </a>
+
+      <h1 class="hero-title">
+        Design with the 
+        <span class="hero-selection-box">
+          <span class="corner tl"></span>
+          <span class="corner tr"></span>
+          <span class="corner bl"></span>
+          <span class="corner br"></span>
+          <span class="selection-text">components</span>
+          <span class="selection-tag">Button / primary</span>
+        </span>
+        <br>your team already ships.
+      </h1>
+
+      <p class="hero-subtitle">
+        Marquee is a design canvas that runs on your codebase. Every layer is a production component, every color is a token, and handoff is a link.
+      </p>
+
+      <div class="hero-cta-group">
+        <a href="#demo-simulator" class="btn btn-hero-primary" onclick="scrollToSim()">
+          Start designing
+        </a>
+        <button class="btn btn-hero-secondary" onclick="openTourModal()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+            <polygon points="6 3 20 12 6 21 6 3"/>
+          </svg>
+          Watch the 2-min tour
+        </button>
+        <span class="hero-footnote">free for 3 editors • no card</span>
+      </div>
+
+      <!-- Interactive Design Canvas Preview Mockup -->
+      <div class="design-canvas-container">
+        <div class="canvas-window">
+          <!-- Canvas Topbar -->
+          <div class="canvas-topbar">
+            <div class="canvas-dots">
+              <span class="canvas-dot dot-red"></span>
+              <span class="canvas-dot dot-yellow"></span>
+              <span class="canvas-dot dot-green"></span>
+            </div>
+
+            <div class="canvas-breadcrumb">
+              <span class="crumb-org">Acme</span>
+              <span class="crumb-slash">/</span>
+              <span class="crumb-file">Checkout</span>
+              <span class="crumb-tag">main</span>
+            </div>
+
+            <!-- Center Canvas Tools -->
+            <div class="canvas-toolbar">
+              <button class="canvas-tool-btn active" title="Select (V)"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M4 2l12 11.5-5.5 1.2 3.5 7.3-2.7 1.3-3.5-7.3L4 20z"/></svg></button>
+              <button class="canvas-tool-btn" title="Frame (F)"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></button>
+              <button class="canvas-tool-btn" title="Rectangle (R)"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/></svg></button>
+              <button class="canvas-tool-btn" title="Text (T)"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3M12 4v16M8 20h8"/></svg></button>
+              <button class="canvas-tool-btn" title="Component (C)"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l4 4-4 4-4-4 4-4zM2 12l4 4-4 4-4-4 4-4zM12 14l4 4-4 4-4-4 4-4zM14 12l4 4-4 4-4-4 4-4z"/></svg></button>
+              <button class="canvas-tool-btn" title="Hand (H)"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 11V6a2 2 0 0 0-4 0v5M14 10V4a2 2 0 0 0-4 0v7M10 10.5V6a2 2 0 0 0-4 0v8a7 7 0 0 0 14 0v-3a2 2 0 0 0-4 0"/></svg></button>
+              <button class="canvas-tool-btn" title="Comment (M)"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>
+            </div>
+
+            <!-- Right Controls -->
+            <div class="canvas-meta-actions">
+              <div class="canvas-avatar-stack">
+                <span class="avatar-circle av-1" title="Sarah (Lead Designer)">S</span>
+                <span class="avatar-circle av-2" title="Alex (SecOps)">A</span>
+                <span class="avatar-circle av-3" title="Dev (Frontend)">D</span>
+              </div>
+              <button class="canvas-dev-btn" onclick="showToast('Developer inspection mode active', 'info')" title="Toggle Code Mode"><code>&lt;/&gt; dev</code></button>
+              <button class="canvas-share-btn" onclick="copyToClipboard(window.location.href, 'Canvas Link')">Share</button>
+            </div>
+          </div>
+
+          <!-- Canvas Body Workspace -->
+          <div class="canvas-workspace">
+            <!-- Left Sidebar: Layers / Assets -->
+            <div class="canvas-pane-left">
+              <div class="pane-tabs">
+                <button class="pane-tab active">Layers</button>
+                <button class="pane-tab">Assets</button>
+              </div>
+              <div class="pane-group">
+                <div class="group-heading">PAGES</div>
+                <div class="tree-node active"><span class="tree-icon">📄</span> Checkout <span class="check-badge">✓</span></div>
+                <div class="tree-node"><span class="tree-icon">📄</span> Onboarding</div>
+                <div class="tree-node"><span class="tree-icon">📄</span> Empty states</div>
+              </div>
+              <div class="pane-group">
+                <div class="group-heading">LAYERS</div>
+                <div class="tree-node layer-root active"><span class="hash-icon">#</span> Checkout — Desktop</div>
+                <div class="tree-node indent-1"><span class="comp-icon">❖</span> Header Nav</div>
+                <div class="tree-node indent-1 active-layer"><span class="comp-icon">❖</span> Upgrade your team</div>
+                <div class="tree-node indent-2"><span class="comp-icon">❖</span> Team plan badge</div>
+                <div class="tree-node indent-2"><span class="comp-icon">❖</span> Primary CTA Button</div>
+              </div>
+            </div>
+
+            <!-- Center Artboard Stage -->
+            <div class="canvas-stage">
+              <div class="canvas-ruler-bar">
+                <span>0</span><span>100</span><span>200</span><span>300</span><span>400</span><span>500</span><span>600</span>
+              </div>
+              <div class="artboard-frame">
+                <div class="artboard-header">
+                  <span class="artboard-title">Checkout — Desktop</span>
+                  <span class="artboard-size">1440 × 900</span>
+                </div>
+                <!-- The Interactive Canvas Card -->
+                <div class="stage-card">
+                  <div class="stage-card-pill">
+                    <span class="pulse-dot-violet"></span> Team plan
+                  </div>
+                  <h2 class="stage-card-title">Upgrade your team</h2>
+                  <div class="stage-seats-count">5 seats included • Real-time Watchdog</div>
+                  <div class="stage-card-action">
+                    <div class="component-selection-wrapper">
+                      <div class="comp-corner c-tl"></div>
+                      <div class="comp-corner c-tr"></div>
+                      <div class="comp-corner c-bl"></div>
+                      <div class="comp-corner c-br"></div>
+                      <button class="stage-primary-btn" onclick="runAttackSim('brute_force')">
+                        Start 14-day free trial
+                      </button>
+                      <div class="floating-selection-badge">Button / primary</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Sidebar: Inspector -->
+            <div class="canvas-pane-right">
+              <div class="inspector-header">
+                <div class="inspector-title">
+                  <span class="inspector-symbol">❖</span> Button
+                </div>
+                <span class="inspector-pkg">@acme/ui</span>
+              </div>
+              <div class="inspector-block">
+                <div class="block-label">SIZE</div>
+                <div class="size-row">
+                  <div class="size-cell"><span>W</span> <b>272</b></div>
+                  <div class="size-cell"><span>H</span> <b>36</b></div>
+                </div>
+              </div>
+              <div class="inspector-block">
+                <div class="block-label">PROPS</div>
+                <div class="prop-item">
+                  <span class="prop-name">variant</span>
+                  <span class="prop-chip">primary <svg width="10" height="10" viewBox="0 0 24 24"><path fill="currentColor" d="M7 10l5 5 5-5z"/></svg></span>
+                </div>
+                <div class="prop-item">
+                  <span class="prop-name">size</span>
+                  <span class="prop-chip">md <svg width="10" height="10" viewBox="0 0 24 24"><path fill="currentColor" d="M7 10l5 5 5-5z"/></svg></span>
+                </div>
+                <div class="prop-item">
+                  <span class="prop-name">width</span>
+                  <span class="prop-chip">fill <svg width="10" height="10" viewBox="0 0 24 24"><path fill="currentColor" d="M7 10l5 5 5-5z"/></svg></span>
+                </div>
+                <div class="prop-item">
+                  <span class="prop-name">theme</span>
+                  <span class="prop-chip gradient-text-chip">electric-violet</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Hackathon Demo Simulation Bar -->
-    <section class="demo-bar">
+    <section class="demo-bar" id="demo-simulator">
       <div class="demo-bar-label">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
           <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
@@ -263,7 +479,7 @@
         </div>
 
         <div class="channel-card">
-          <div class="channel-icon icon-orange">📱</div>
+          <div class="channel-icon icon-purple">📱</div>
           <h4>Twilio SMS</h4>
           <span class="channel-badge tier-high">Tier 3 • High & Critical</span>
           <p>Instant SMS dispatch. Two-way reply: text <b>ACK</b> to acknowledge or <b>BLOCK</b> to ban attacker.</p>
@@ -278,6 +494,7 @@
           <div class="channel-status" id="cfg-voice-status">TwiML Interactive Voice</div>
         </div>
       </div>
+    </div>
     <!-- Modern Responsive Footer -->
     <footer class="app-footer">
       <div class="footer-grid">
@@ -389,6 +606,15 @@
         📱 Escalation Channels
       </button>
       <div class="drawer-divider"></div>
+      <button class="drawer-link" onclick="toggleTheme(); closeMobileMenu();">
+        🌓 Toggle Theme (Light / Dark)
+      </button>
+      <a href="#hero-canvas" class="drawer-link" onclick="closeMobileMenu()">
+        🎨 Studio Canvas
+      </a>
+      <a href="#demo-simulator" class="drawer-link" onclick="scrollToSim(); closeMobileMenu();">
+        ⚡ Attack Simulator
+      </a>
       <a href="/docs" class="drawer-link external-link" target="_blank">
         📖 API Documentation
       </a>
@@ -400,6 +626,42 @@
       </a>
     </nav>
   </aside>
+
+  <!-- SaaS Product Tour Walkthrough Modal -->
+  <div id="tour-modal" class="modal-backdrop" onclick="closeTourModal(event)">
+    <div class="modal-window" onclick="event.stopPropagation()" style="max-width: 580px;">
+      <div class="modal-header">
+        <div>
+          <span class="tour-step-badge" id="tour-step-badge">STEP 1 OF 3</span>
+          <h3 id="tour-modal-title" style="margin-top:6px; font-size:1.25rem;">Design-First Security Canvas</h3>
+        </div>
+        <button class="btn-close" onclick="closeTourModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="tour-modal-body">
+        <p class="tour-step-body" id="tour-modal-text">
+          NightWatcher monitors every layer of your application like a living design canvas: logins, website uptime & SSL, phishing messages, and leaked credentials.
+        </p>
+        <div class="tour-highlight-box" id="tour-modal-highlight">
+          <span class="tour-highlight-icon">🛡️</span>
+          <div>
+            <b style="color:var(--text-primary); display:block; margin-bottom:2px;">Production Guardrails</b>
+            <span style="font-size:0.82rem; color:var(--text-secondary);">Real-time autonomous defense with zero manual triage overhead.</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="justify-content:space-between; align-items:center;">
+        <div class="tour-dots-indicator" id="tour-dots">
+          <span class="tour-dot active"></span>
+          <span class="tour-dot"></span>
+          <span class="tour-dot"></span>
+        </div>
+        <div class="flex-gap">
+          <button class="btn btn-secondary btn-sm" id="btn-tour-prev" onclick="prevTourStep()" style="display:none;">Back</button>
+          <button class="btn btn-primary btn-sm" id="btn-tour-next" onclick="nextTourStep()">Next</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div id="toast-container" class="toast-container"></div>
 
