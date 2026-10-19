@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NightWatcher — Always Watching. Loudest When It Matters.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Top Navigation Bar -->
+    <header class="top-nav">
+      <div class="brand">
+        <div class="logo-shield">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-title">
+            <span class="brand-name">NIGHTWATCHER</span>
+            <span class="badge-live"><span class="pulse-dot"></span> LIVE ENGINE</span>
+          </div>
+          <div class="brand-sub">Always watching. Loudest when it matters.</div>
+        </div>
+      </div>
+
+      <div class="nav-controls">
+        <div class="status-indicator online">
+          <span class="status-ring"></span>
+          <span>Watchdog: Online</span>
+        </div>
+        <button id="btn-refresh" class="btn btn-secondary btn-sm" onclick="fetchDashboardData()">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+          </svg>
+          Sync
+        </button>
+      </div>
+    </header>
+
+    <!-- Hackathon Demo Simulation Bar -->
+    <section class="demo-bar">
+      <div class="demo-bar-label">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+        </svg>
+        <span>LIVE HACKATHON ATTACK SIMULATOR:</span>
+      </div>
+      <div class="demo-actions">
+        <button class="btn btn-demo btn-demo-brute" onclick="runAttackSim('brute_force')">
+          ⚡ 1. Brute Force (15 Attempts)
+        </button>
+        <button class="btn btn-demo btn-demo-stuff" onclick="runAttackSim('credential_stuffing')">
+          ⚡ 2. Credential Stuffing
+        </button>
+        <button class="btn btn-demo btn-demo-crit" onclick="runAttackSim('login_success_after_brute')">
+          🚨 3. Breach Login Alarm (Critical)
+        </button>
+        <button class="btn btn-demo btn-demo-down" onclick="runAttackSim('site_down')">
+          ⚠️ 4. Website Outage
+        </button>
+        <button class="btn btn-demo btn-demo-phish" onclick="runAttackSim('phishing')">
+          🎣 5. Phishing Message
+        </button>
+      </div>
+    </section>
+
+    <!-- Metrics Stat Cards -->
+    <section class="metrics-grid">
+      <div class="metric-card active-card">
+        <div class="metric-header">
+          <span class="metric-title">Active Alerts</span>
+          <span class="metric-icon icon-yellow">⚠️</span>
+        </div>
+        <div class="metric-value" id="stat-active">0</div>
+        <div class="metric-foot" id="stat-active-sub">Requires triage</div>
+      </div>
+
+      <div class="metric-card critical-card">
+        <div class="metric-header">
+          <span class="metric-title">Critical & Escalating</span>
+          <span class="metric-icon icon-red">🚨</span>
+        </div>
+        <div class="metric-value" id="stat-critical">0</div>
+        <div class="metric-foot" id="stat-escalation-sub">Voice / SMS triggered</div>
+      </div>
+
+      <div class="metric-card blocked-card">
+        <div class="metric-header">
+          <span class="metric-title">Auto-Blocked Attackers</span>
+          <span class="metric-icon icon-purple">🚫</span>
+        </div>
+        <div class="metric-value" id="stat-blocked">0</div>
+        <div class="metric-foot">Enforced in blocklist</div>
+      </div>
+
+      <div class="metric-card sites-card">
+        <div class="metric-header">
+          <span class="metric-title">Monitored Assets</span>
+          <span class="metric-icon icon-green">🛡️</span>
+        </div>
+        <div class="metric-value" id="stat-sites">0</div>
+        <div class="metric-foot" id="stat-sites-sub">Logins • Uptime • SSL</div>
+      </div>
+    </section>
+
+    <!-- Main Content Navigation Tabs -->
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab('tab-alerts')">
+        🚨 Alert Incidents (<span id="tab-count-alerts">0</span>)
+      </button>
+      <button class="tab-btn" onclick="switchTab('tab-tools')">
+        🔍 Phishing & Password Tools
+      </button>
+      <button class="tab-btn" onclick="switchTab('tab-sites')">
+        🌐 Website Watcher (<span id="tab-count-sites">0</span>)
+      </button>
+      <button class="tab-btn" onclick="switchTab('tab-blocklist')">
+        🚫 Active Blocklist (<span id="tab-count-block">0</span>)
+      </button>
+      <button class="tab-btn" onclick="switchTab('tab-channels')">
+        📱 Escalation Channels
+      </button>
+    </div>
+
+    <!-- TAB 1: ALERTS FEED -->
+    <main id="tab-alerts" class="tab-panel active">
+      <div class="panel-header">
+        <div class="filter-group">
+          <button class="filter-pill active" onclick="filterAlerts('all')">All</button>
+          <button class="filter-pill" onclick="filterAlerts('active')">Needs Action</button>
+          <button class="filter-pill" onclick="filterAlerts('critical')">Critical (Voice/SMS)</button>
+          <button class="filter-pill" onclick="filterAlerts('acknowledged')">Acknowledged</button>
+          <button class="filter-pill" onclick="filterAlerts('resolved')">Resolved</button>
+        </div>
+        <div class="search-box">
+          <input type="text" id="alert-search-input" placeholder="🔍 Filter alerts by IP, type, keyword..." class="form-input search-input" oninput="handleAlertSearch(this.value)">
+        </div>
+        <div class="feed-status-text" id="feed-last-updated">Auto-refreshed</div>
+      </div>
+
+      <div id="alerts-container" class="alerts-list">
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p>Connecting to NightWatcher security engine...</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- TAB 2: INTERACTIVE TOOLS -->
+    <div id="tab-tools" class="tab-panel">
+      <div class="tools-grid">
+        <!-- Phishing Inspector -->
+        <div class="tool-card">
+          <div class="tool-head">
+            <h3>🎣 Phishing & Scam URL Inspector</h3>
+            <p>Paste suspicious SMS, Telegram text, or URL to inspect for lookalike domains, punycode, raw IPs, and urgency heuristics.</p>
+          </div>
+          <div class="tool-body">
+            <textarea id="phish-input" placeholder="e.g. URGENT: Your PayPal account is suspended. Verify now: http://paypa1-secure-login.xyz/auth" rows="4"></textarea>
+            <div class="tool-action-row">
+              <button class="btn btn-primary" onclick="inspectPhishing()">
+                Analyze Phishing Risk
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="setPhishExample(1)">Example 1 (Spoofed Bank)</button>
+              <button class="btn btn-secondary btn-sm" onclick="setPhishExample(2)">Example 2 (IP URL)</button>
+            </div>
+            <div id="phish-result" class="tool-output-box" style="display: none;"></div>
+          </div>
+        </div>
+
+        <!-- Password Pwned Checker -->
+        <div class="tool-card">
+          <div class="tool-head">
+            <h3>🔑 Pwned Password Checker (k-Anonymity)</h3>
+            <p>Checks password breach exposure via the free Have I Been Pwned range API. Safe: only first 5 chars of SHA-1 hash leave your machine.</p>
+          </div>
+          <div class="tool-body">
+            <input type="text" id="pwd-input" placeholder="Type a password to test (e.g. password123, hunter2, Tr0ub4dor&3)" class="form-input">
+            <div class="tool-action-row">
+              <button class="btn btn-primary" onclick="inspectPassword()">
+                Check Password Exposure
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="setPwdExample('password123')">Test 'password123'</button>
+              <button class="btn btn-secondary btn-sm" onclick="setPwdExample('SolarWinds123!')">Test 'SolarWinds123!'</button>
+            </div>
+            <div id="pwd-result" class="tool-output-box" style="display: none;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: WEBSITES -->
+    <div id="tab-sites" class="tab-panel">
+      <div class="card p-20 mb-20">
+        <div class="flex-between">
+          <div>
+            <h3>🌐 Watched Websites & SSL Certificates</h3>
+            <p class="text-muted">Monitors uptime every 5m, SSL expiration, HTTP to HTTPS redirects, and security headers.</p>
+          </div>
+          <div class="flex-gap">
+            <input type="text" id="new-site-url" placeholder="https://example.com" class="form-input" style="width:280px;">
+            <button class="btn btn-primary" onclick="addWatchedSite()">+ Watch Site</button>
+          </div>
+        </div>
+      </div>
+      <div id="sites-container" class="sites-grid"></div>
+    </div>
+
+    <!-- TAB 4: BLOCKLIST -->
+    <div id="tab-blocklist" class="tab-panel">
+      <div class="card p-20 mb-20">
+        <div class="flex-between">
+          <div>
+            <h3>🚫 Autonomous IP Blocklist</h3>
+            <p class="text-muted">IPs blocked automatically by the login watcher upon detecting brute-force or credential stuffing.</p>
+          </div>
+          <div class="flex-gap">
+            <input type="text" id="manual-block-ip" placeholder="192.168.1.100" class="form-input" style="width:200px;">
+            <button class="btn btn-danger" onclick="manualBlockIP()">Block IP</button>
+          </div>
+        </div>
+      </div>
+      <div id="blocklist-container"></div>
+    </div>
+
+    <!-- TAB 5: ESCALATION CHANNELS -->
+    <div id="tab-channels" class="tab-panel">
+      <div class="channels-matrix">
+        <div class="channel-card">
+          <div class="channel-icon icon-blue">📧</div>
+          <h4>Email Alerts</h4>
+          <span class="channel-badge tier-low">Tier 1 • Low & Medium</span>
+          <p>Delivers clean, actionable summaries to administrators without security jargon.</p>
+          <div class="channel-status" id="cfg-email-status">Configured via SMTP</div>
+        </div>
+
+        <div class="channel-card">
+          <div class="channel-icon icon-yellow">💬</div>
+          <h4>Telegram Bot</h4>
+          <span class="channel-badge tier-med">Tier 2 • Medium to Critical</span>
+          <p>Interactive buttons: <b>[Acknowledge]</b>, <b>[Block IP]</b>, <b>[Ignore]</b> directly on your phone.</p>
+          <div class="channel-status" id="cfg-tg-status">BotFather integration</div>
+        </div>
+
+        <div class="channel-card">
+          <div class="channel-icon icon-orange">📱</div>
+          <h4>Twilio SMS</h4>
+          <span class="channel-badge tier-high">Tier 3 • High & Critical</span>
+          <p>Instant SMS dispatch. Two-way reply: text <b>ACK</b> to acknowledge or <b>BLOCK</b> to ban attacker.</p>
+          <div class="channel-status" id="cfg-sms-status">Twilio SMS Webhook</div>
+        </div>
+
+        <div class="channel-card">
+          <div class="channel-icon icon-red">📞</div>
+          <h4>Twilio Voice Call</h4>
+          <span class="channel-badge tier-crit">Tier 4 • Critical & Escalated</span>
+          <p>Rings admin phone at 3 AM: speaks threat summary, prompts <b>"Press 1 to ACK, 2 to Block"</b>.</p>
+          <div class="channel-status" id="cfg-voice-status">TwiML Interactive Voice</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Detail Modal -->
+  <div id="alert-modal" class="modal-backdrop" onclick="closeModal(event)">
+    <div class="modal-window" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <span id="modal-severity-badge" class="severity-badge">CRITICAL</span>
+          <h3 id="modal-title" style="margin-top:6px;">Alert Details</h3>
+        </div>
+        <button class="btn-close" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-content"></div>
+      <div class="modal-footer" id="modal-actions"></div>
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

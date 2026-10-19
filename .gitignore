@@ -1,0 +1,34 @@
+# Environment & Secrets (NEVER COMMIT)
+.env
+*.env
+*.pem
+*.key
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# Python Cache & Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Database & Runtime Data
+*.db
+*.sqlite
+*.sqlite3
+demo/sample_logs/auth.log
+
+# IDE & OS
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
