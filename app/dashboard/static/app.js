@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
   fetchDashboardData();
   // Poll every 3 seconds for hackathon responsiveness
   pollTimer = setInterval(fetchDashboardData, 3000);
+  // Dynamic copyright year
+  const yrEl = document.getElementById('copyright-year');
+  if (yrEl) yrEl.textContent = new Date().getFullYear();
 });
 
 function handleAlertSearch(val) {
@@ -567,6 +570,16 @@ function switchTab(tabId) {
 
   if (tabId === 'tab-sites') loadWatchedSites();
   if (tabId === 'tab-blocklist') loadBlocklist();
+
+  // Dynamic tab page title
+  const titleMap = {
+    'tab-alerts': 'NightWatcher — Alert Incidents & Active Triage',
+    'tab-tools': 'NightWatcher — Phishing & Password Tools',
+    'tab-sites': 'NightWatcher — Watched Websites & SSL Certificates',
+    'tab-blocklist': 'NightWatcher — Autonomous IP Blocklist',
+    'tab-channels': 'NightWatcher — Escalation Channels',
+  };
+  if (titleMap[tabId]) document.title = titleMap[tabId];
 }
 
 function filterAlerts(filter) {
