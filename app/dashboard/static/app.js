@@ -51,14 +51,24 @@ async function fetchDashboardData() {
 }
 
 function updateStatsUI(stats) {
-  document.getElementById('stat-active').textContent = stats.active_alerts;
-  document.getElementById('stat-critical').textContent = stats.critical_alerts + stats.high_alerts;
-  document.getElementById('stat-blocked').textContent = stats.blocked_ips;
-  document.getElementById('stat-sites').textContent = stats.watched_sites_total;
+  const safeSet = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+  };
 
-  document.getElementById('tab-count-alerts').textContent = stats.active_alerts;
-  document.getElementById('tab-count-sites').textContent = stats.watched_sites_total;
-  document.getElementById('tab-count-block').textContent = stats.blocked_ips;
+  safeSet('stat-active', stats.active_alerts);
+  safeSet('stat-critical', (stats.critical_alerts || 0) + (stats.high_alerts || 0));
+  safeSet('stat-blocked', stats.blocked_ips);
+  safeSet('stat-sites', stats.watched_sites_total);
+
+  safeSet('tab-count-alerts', stats.active_alerts);
+  safeSet('drawer-count-alerts', stats.active_alerts);
+
+  safeSet('tab-count-sites', stats.watched_sites_total);
+  safeSet('drawer-count-sites', stats.watched_sites_total);
+
+  safeSet('tab-count-block', stats.blocked_ips);
+  safeSet('drawer-count-block', stats.blocked_ips);
 }
 
 function renderAlertsList() {
@@ -532,9 +542,14 @@ async function manualBlockIP() {
 function switchTab(tabId) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.drawer-link').forEach(b => b.classList.remove('active'));
 
-  document.getElementById(tabId).classList.add('active');
-  event.currentTarget.classList.add('active');
+  const targetPanel = document.getElementById(tabId);
+  if (targetPanel) targetPanel.classList.add('active');
+
+  // Highlight corresponding desktop tab and drawer link
+  document.querySelectorAll(`.tab-btn[onclick*="${tabId}"]`).forEach(b => b.classList.add('active'));
+  document.querySelectorAll(`.drawer-link[onclick*="${tabId}"]`).forEach(b => b.classList.add('active'));
 
   if (tabId === 'tab-sites') loadWatchedSites();
   if (tabId === 'tab-blocklist') loadBlocklist();
@@ -617,3 +632,45 @@ function escapeHtml(str) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
 }
+
+// ── Mobile Drawer Navigation Controls ───────────────────
+function toggleMobileMenu() {
+  const drawer = document.getElementById('mobile-nav-drawer');
+  const overlay = document.getElementById('mobile-drawer-overlay');
+  const btn = document.getElementById('btn-mobile-menu');
+  if (!drawer) return;
+  const isOpen = drawer.classList.contains('active');
+
+  if (isOpen) {
+    closeMobileMenu();
+  } else {
+    drawer.classList.add('active');
+    if (overlay) overlay.classList.add('active');
+    if (btn) btn.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closeMobileMenu() {
+  const drawer = document.getElementById('mobile-nav-drawer');
+  const overlay = document.getElementById('mobile-drawer-overlay');
+  const btn = document.getElementById('btn-mobile-menu');
+  if (drawer) drawer.classList.remove('active');
+  if (overlay) overlay.classList.remove('active');
+  if (btn) btn.setAttribute('aria-expanded', 'false');
+  document.body.style.overflow = '';
+}
+
+function switchTabAndClose(tabId) {
+  switchTab(tabId);
+  closeMobileMenu();
+}
+
+// Global keyboard listeners
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeMobileMenu();
+    closeModal();
+  }
+});
+

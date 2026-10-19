@@ -40,6 +40,13 @@
           </svg>
           Sync
         </button>
+        <button id="btn-mobile-menu" class="btn-hamburger" onclick="toggleMobileMenu()" aria-label="Toggle Navigation Menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
       </div>
     </header>
 
@@ -282,6 +289,50 @@
       <div class="modal-footer" id="modal-actions"></div>
     </div>
   </div>
+
+  <!-- Mobile Navigation Drawer & Backdrop -->
+  <div id="mobile-drawer-overlay" class="drawer-overlay" onclick="closeMobileMenu()"></div>
+  <aside id="mobile-nav-drawer" class="mobile-drawer" aria-label="Mobile Navigation">
+    <div class="drawer-header">
+      <div class="brand">
+        <div class="logo-shield">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+        </div>
+        <span class="brand-name">NIGHTWATCHER</span>
+      </div>
+      <button class="btn-close" onclick="closeMobileMenu()" aria-label="Close navigation menu">&times;</button>
+    </div>
+    <nav class="drawer-links">
+      <button class="drawer-link active" onclick="switchTabAndClose('tab-alerts')">
+        🚨 Alert Incidents (<span id="drawer-count-alerts">0</span>)
+      </button>
+      <button class="drawer-link" onclick="switchTabAndClose('tab-tools')">
+        🔍 Phishing & Password Tools
+      </button>
+      <button class="drawer-link" onclick="switchTabAndClose('tab-sites')">
+        🌐 Website Watcher (<span id="drawer-count-sites">0</span>)
+      </button>
+      <button class="drawer-link" onclick="switchTabAndClose('tab-blocklist')">
+        🚫 Active Blocklist (<span id="drawer-count-block">0</span>)
+      </button>
+      <button class="drawer-link" onclick="switchTabAndClose('tab-channels')">
+        📱 Escalation Channels
+      </button>
+      <div class="drawer-divider"></div>
+      <a href="/docs" class="drawer-link external-link" target="_blank">
+        📖 API Documentation
+      </a>
+      <a href="/health" class="drawer-link external-link" target="_blank">
+        💚 System Health
+      </a>
+      <a href="http://localhost:8001/" class="drawer-link external-link" target="_blank">
+        🏢 Monitored Customer Portal
+      </a>
+    </nav>
+  </aside>
 
   <div id="toast-container" class="toast-container"></div>
 
