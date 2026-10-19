@@ -9,28 +9,28 @@
 
 ## 1. Twenty-Point Polish Checklist Status
 
-| # | Polish Item | Status | Evidence (Files & Screens) | Effort | Recommended Action |
+| # | Polish Item | Status | Evidence (Files & Screens) | Effort | Verification Result |
 | :-: | :--- | :---: | :--- | :---: | :--- |
-| **1** | **Remove horizontal scrolling** | **Needs Fix** | `app/dashboard/templates/index.html`<br>`app/dashboard/static/style.css` | **S** | Add `overflow-x: hidden` to root containers; ensure `.tab-nav` and `.demo-actions` wrap smoothly or support touch scrolling on screens < 360px without expanding parent viewport. |
-| **2** | **Find broken links** | **Needs Fix** | `scripts/check_links.py`<br>`index.html` | **S** | Core endpoints (200 OK), but dashboard header lacks outbound navigation links to `/docs`, `/health`, and demo portal (`:8001`). Add verified direct links. |
-| **3** | **Add a mobile menu** | **Needs Fix** | `index.html`<br>`style.css`<br>`app.js` | **M** | Desktop navigation uses an inline row of 5 tabs. On mobile (< 768px), implement an accessible hamburger navigation drawer toggling tabs and links. |
-| **4** | **Add a favicon** | **Needs Fix** | `index.html`<br>`demo/fake_login_app.py`<br>`app/main.py` | **S** | No `<link rel="icon">` defined; browsers requesting `/favicon.ico` receive 404. Add vector SVG cyber shield favicon and FastAPI favicon route. |
-| **5** | **Fix page titles** | **Needs Fix** | `index.html`<br>`demo/fake_login_app.py` | **S** | Update page titles dynamically when switching tabs (e.g. `NightWatcher — Phishing Inspector`) and provide clear branded titles for portal and 404. |
-| **6** | **Add meta descriptions** | **Needs Fix** | `index.html`<br>`demo/fake_login_app.py` | **S** | Missing `<meta name="description">`, OpenGraph (`og:title`, `og:description`, `og:image`), and Twitter preview tags. |
-| **7** | **Fix footer links** | **Needs Fix** | `index.html`<br>`style.css` | **S** | No footer exists on the dashboard. Add a modern, responsive footer with working links to API Docs, Health Status, SOC Hotline, and Support. |
-| **8** | **Add a custom 404 page** | **Needs Fix** | `app/main.py`<br>`app/dashboard/templates/404.html` | **M** | Unknown web routes return raw JSON `{"detail": "Not Found"}`. Implement custom Starlette 404 handler rendering branded HTML with "Go Home" and "Search" buttons. |
-| **9** | **Fix the copyright year** | **Needs Fix** | `index.html` | **S** | Add dynamic JavaScript year in footer (`© <span id="year"></span> NightWatcher SOC`) to eliminate hardcoded, stale years. |
-| **10** | **Compress images** | **OK** | `scripts/image_audit.py` | **S** | All current icons are lightweight inline SVGs. Total static size is 42.97 KB (well within 150 KB budget). |
-| **11** | **Fix broken buttons** | **Needs Fix** | `app.js`<br>`index.html` | **S** | Attack simulator buttons and watcher controls lack debounce protection and visual loading spinners during fetch requests. |
-| **12** | **Add success messages** | **Needs Fix** | `app.js`<br>`style.css` | **S** | User actions (copying IP, running attack simulation, unblocking IP, adding site) lack toast confirmation banners. |
-| **13** | **Add error messages** | **Needs Fix** | `app.js`<br>`style.css` | **M** | Network disconnects or API errors fail silently to console. Add central toast/banner error mapper with user-friendly retry hints. |
-| **14** | **Remove placeholder text** | **Needs Fix** | `scripts/find-placeholders.py`<br>`index.html` | **S** | Found default `placeholder="https://example.com"`. Replace with realistic production examples and ensure no TODO/sample text. |
-| **15** | **Remove unused navigation** | **OK** | `index.html`<br>`app.js` | **S** | All 5 tabs and modals correspond to fully implemented features. All tabs verified active. |
-| **16** | **Fix mobile overflow** | **Needs Fix** | `index.html`<br>`style.css` | **S** | Detail modal (`#alert-modal`) and IP blocklist table can clip on small landscape mobile viewports. Add `max-height: 85vh` and overflow scrolling. |
-| **17** | **Make the logo clickable** | **Needs Fix** | `index.html` | **S** | Top header logo is currently wrapped in a `<div>`. Convert to `<a href="/" aria-label="NightWatcher Home">` with smooth scroll-to-top. |
-| **18** | **Make phone number clickable** | **Needs Fix** | `index.html` | **S** | Add emergency SOC on-call hotline (`tel:+18005550199`) with click-to-dial and click-to-copy interactions. |
-| **19** | **Make email clickable** | **Needs Fix** | `index.html` | **S** | Add incident response email (`mailto:soc@nightwatcher.io`) with pre-filled subject line and click-to-copy. |
-| **20** | **Make every page mobile optimized** | **Needs Fix** | `style.css`<br>`index.html` | **M** | Enforce 44px touch targets on buttons/pills, optimize mobile padding, ensure dark-theme contrast, and verify on 320px-414px viewports. |
+| **1** | **Remove horizontal scrolling** | **OK (Resolved)** | `style.css`<br>`index.html` | **S** | Verified: `overflow-x: hidden` enforced on `html, body`; container widths fluid. 0 horizontal scroll. |
+| **2** | **Find broken links** | **OK (Resolved)** | `scripts/check_links.py`<br>`index.html` | **S** | Verified: All internal routes and static assets resolve with 200 OK via `check_links.py`. |
+| **3** | **Add a mobile menu** | **OK (Resolved)** | `index.html`<br>`style.css`<br>`app.js` | **M** | Verified: Responsive hamburger button (`#btn-mobile-menu`) toggles sliding navigation drawer `<aside id="mobile-nav-drawer">`. |
+| **4** | **Add a favicon** | **OK (Resolved)** | `favicon.svg`<br>`app/main.py`<br>`index.html` | **S** | Verified: Scalable SVG cyber shield favicon created; `/favicon.ico` route serves 200 OK. |
+| **5** | **Fix page titles** | **OK (Resolved)** | `index.html`<br>`app.js`<br>`404.html` | **S** | Verified: Dynamic page titles updated per active tab; branded titles on portal and 404 page. |
+| **6** | **Add meta descriptions** | **OK (Resolved)** | `index.html`<br>`fake_login_app.py` | **S** | Verified: `<meta name="description">`, OpenGraph (`og:title`, `og:description`), and Twitter cards added. |
+| **7** | **Fix footer links** | **OK (Resolved)** | `index.html`<br>`style.css` | **S** | Verified: Modern responsive footer added with working links to API Docs, Health Status, Demo Portal, and Support. |
+| **8** | **Add a custom 404 page** | **OK (Resolved)** | `templates/404.html`<br>`app/main.py` | **M** | Verified: Custom Starlette 404 handler serves branded `404.html` for browser requests, JSON for API routes. |
+| **9** | **Fix the copyright year** | **OK (Resolved)** | `index.html`<br>`app.js` | **S** | Verified: Dynamic copyright year rendered at runtime via `new Date().getFullYear()`. |
+| **10** | **Compress images** | **OK (Resolved)** | `scripts/image_audit.py` | **S** | Verified: Entire static footprint is 54.97 KB (0 budget violations against 150 KB budget). |
+| **11** | **Fix broken buttons** | **OK (Resolved)** | `app.js`<br>`style.css` | **S** | Verified: Debounce locks (500ms) prevent double-firing; loading and hover states active. |
+| **12** | **Add success messages** | **OK (Resolved)** | `app.js`<br>`style.css` | **S** | Verified: Accessible toast system (`toast-success`, copy confirmation, alert acknowledge). |
+| **13** | **Add error messages** | **OK (Resolved)** | `app.js`<br>`style.css` | **M** | Verified: Human-readable error toasts (`toast-error`, `toast-warning`) with action hints. |
+| **14** | **Remove placeholder text** | **OK (Resolved)** | `scripts/find-placeholders.py` | **S** | Verified: `find-placeholders.py` confirms 0 findings across all templates and scripts. |
+| **15** | **Remove unused navigation** | **OK (Resolved)** | `docs/NAV_MAP.md` | **S** | Verified: All 5 tabs and modals mapped and accessible; 0 dead ends. |
+| **16** | **Fix mobile overflow** | **OK (Resolved)** | `style.css`<br>`index.html` | **S** | Verified: `#alert-modal .modal-window` capped at 90vh with scrollable modal body. |
+| **17** | **Make the logo clickable** | **OK (Resolved)** | `index.html`<br>`style.css` | **S** | Verified: Brand logo converted to `<a href="/" class="brand">` with smooth scroll-to-top. |
+| **18** | **Make phone number clickable** | **OK (Resolved)** | `index.html` | **S** | Verified: Emergency hotline `tel:+18005550199` added with tap-to-call and click-to-copy. |
+| **19** | **Make email clickable** | **OK (Resolved)** | `index.html` | **S** | Verified: Incident desk `mailto:soc@nightwatcher.io` with pre-filled subject and copy helper. |
+| **20** | **Make every page mobile optimized** | **OK (Resolved)** | `docs/MOBILE_CHECKLIST.md`<br>`docs/PERFORMANCE.md` | **M** | Verified: >= 44px touch targets, responsive breakpoints (320px–1200px), sub-0.3s FCP. |
 
 ---
 
