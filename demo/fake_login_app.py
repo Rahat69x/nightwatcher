@@ -100,24 +100,32 @@ async def login_page(request: Request, error: Optional[str] = None):
     error_html = f'<div style="background:rgba(239,68,68,0.2); border:1px solid #ef4444; color:#fca5a5; padding:10px; border-radius:8px; margin-bottom:16px;">{error}</div>' if error else ''
 
     return f"""<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Apex Vault — Secure customer banking and storage portal. Monitored by NightWatcher autonomous security watchdog.">
     <title>Apex Vault — Secure Portal</title>
+    <link rel="icon" type="image/svg+xml" href="http://localhost:8000/static/favicon.svg">
     <style>
-        body {{ background: #090d16; color: #f8fafc; font-family: -apple-system, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }}
-        .box {{ background: #151f32; border: 1px solid #24324c; border-radius: 14px; padding: 36px 32px; width: 360px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }}
+        body {{ background: #090d16; color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 16px; box-sizing: border-box; }}
+        .box {{ background: #151f32; border: 1px solid #24324c; border-radius: 14px; padding: 36px 32px; width: 100%; max-width: 380px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); box-sizing: border-box; }}
         h2 {{ margin-top: 0; font-size: 1.4rem; color: #38bdf8; }}
+        h2 a {{ text-decoration: none; color: inherit; }}
         label {{ display: block; font-size: 0.82rem; color: #94a3b8; margin-bottom: 6px; }}
-        input {{ width: 100%; box-sizing: border-box; background: #0b111e; border: 1px solid #24324c; color: #fff; padding: 10px; border-radius: 8px; margin-bottom: 16px; outline: none; }}
+        input {{ width: 100%; box-sizing: border-box; background: #0b111e; border: 1px solid #24324c; color: #fff; padding: 12px; border-radius: 8px; margin-bottom: 16px; outline: none; font-size: 0.95rem; }}
         input:focus {{ border-color: #38bdf8; }}
-        button {{ width: 100%; background: #0284c7; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }}
+        button {{ width: 100%; background: #0284c7; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; min-height: 44px; }}
         button:hover {{ background: #0369a1; }}
         .badge {{ font-size: 0.75rem; color: #64748b; text-align: center; margin-top: 18px; }}
+        .soc-link {{ text-align: center; margin-top: 14px; font-size: 0.8rem; }}
+        .soc-link a {{ color: #38bdf8; text-decoration: none; }}
+        .soc-link a:hover {{ text-decoration: underline; }}
     </style>
 </head>
 <body>
     <div class="box">
-        <h2>Apex Vault Portal</h2>
+        <h2><a href="/">Apex Vault Portal</a></h2>
         <p style="font-size:0.85rem; color:#94a3b8; margin-bottom:20px;">Demo customer system monitored by NightWatcher.</p>
         {error_html}
         <form method="POST" action="/login">
@@ -128,6 +136,9 @@ async def login_page(request: Request, error: Optional[str] = None):
             <button type="submit">Sign In</button>
         </form>
         <div class="badge">Your IP: <span style="font-family:monospace; color:#38bdf8;">{ip}</span></div>
+        <div class="soc-link">
+            <a href="http://localhost:8000/" target="_blank">🛡️ NightWatcher SOC Dashboard &rarr;</a>
+        </div>
     </div>
 </body>
 </html>"""

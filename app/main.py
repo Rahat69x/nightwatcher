@@ -11,9 +11,10 @@ from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, FileResponse, Response, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from starlette.exceptions import HTTPException as StarletteHTTPException
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from app.config import get_settings
@@ -164,6 +165,34 @@ async def serve_dashboard(request: Request, alert_id: int = None):
         name="index.html",
         context={"alert_id": alert_id},
     )
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    fav_file = static_dir / "favicon.svg"
+    if fav_file.exists():
+        return FileResponse(str(fav_file), media_type="image/svg+xml")
+    return Response(status_code=204)
+
+
+@app.exception_handler(StarletteHTTPException)
+async def custom_http_exception_handler(request: Request, exc: StarletteHTTPException):
+    """
+    Handle HTTP exceptions cleanly.
+    Renders branded 404.html for browser users, returns JSON for API requests.
+    """
+    if exc.status_code == 404:
+        accept = request.headers.get("accept", "")
+        if "text/html" in accept and not request.url.path.startswith("/api/"):
+            template_404 = templates_dir / "404.html"
+            if template_404.exists():
+                return templates.TemplateResponse(
+                    request=request,
+                    name="404.html",
+                    status_code=404,
+                )
+        return JSONResponse(status_code=404, content={"detail": exc.detail or "Not Found"})
+    return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
 
 
 @app.get("/health")

@@ -3,7 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="NightWatcher — Automated, self-healing security operations center. Monitors brute-force logins, website uptime & SSL, suspicious phishing messages, and leaked credentials with autonomous auto-blocking.">
+  <meta name="theme-color" content="#090d16">
+  <meta property="og:title" content="NightWatcher — Always Watching. Loudest When It Matters.">
+  <meta property="og:description" content="Autonomous cybersecurity watchdog with tiered escalation: Email, Telegram, SMS & Voice Calls.">
+  <meta property="og:type" content="website">
   <title>NightWatcher — Always Watching. Loudest When It Matters.</title>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+  <link rel="alternate icon" href="/favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -13,7 +20,7 @@
   <div class="app-layout">
     <!-- Top Navigation Bar -->
     <header class="top-nav">
-      <div class="brand">
+      <a href="/" class="brand" aria-label="NightWatcher Home — Return to top" onclick="if(window.location.pathname === '/' || window.location.pathname === '/dashboard') { window.scrollTo({top: 0, behavior: 'smooth'}); return false; }">
         <div class="logo-shield">
           <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
@@ -27,7 +34,7 @@
           </div>
           <div class="brand-sub">Always watching. Loudest when it matters.</div>
         </div>
-      </div>
+      </a>
 
       <div class="nav-controls">
         <div class="status-indicator online">
@@ -271,7 +278,67 @@
           <div class="channel-status" id="cfg-voice-status">TwiML Interactive Voice</div>
         </div>
       </div>
-    </div>
+    <!-- Modern Responsive Footer -->
+    <footer class="app-footer">
+      <div class="footer-grid">
+        <div class="footer-col brand-col">
+          <div class="footer-brand">
+            <div class="logo-shield-sm">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <path d="m9 12 2 2 4-4"/>
+              </svg>
+            </div>
+            <span class="footer-brand-title">NIGHTWATCHER</span>
+          </div>
+          <p class="footer-desc">Automated, self-healing security operations center for modern web applications and APIs. Always watching. Loudest when it matters.</p>
+        </div>
+
+        <div class="footer-col">
+          <h5>System Navigation</h5>
+          <ul class="footer-links">
+            <li><a href="/docs" target="_blank" rel="noopener">Interactive API Docs</a></li>
+            <li><a href="/health" target="_blank" rel="noopener">Engine Health Check</a></li>
+            <li><a href="http://localhost:8001/" target="_blank" rel="noopener">Apex Vault Demo Portal</a></li>
+            <li><a href="#tab-tools" onclick="switchTab('tab-tools')">Phishing & Breach Tools</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Emergency Contact</h5>
+          <ul class="footer-links">
+            <li>
+              <span class="contact-label">SOC Hotline:</span>
+              <a href="tel:+18005550199" class="contact-link" onclick="copyToClipboard('+18005550199', 'Hotline')">📞 +1 (800) 555-0199</a>
+            </li>
+            <li>
+              <span class="contact-label">Incident Desk:</span>
+              <a href="mailto:soc@nightwatcher.io?subject=NightWatcher%20Security%20Incident%20Report" class="contact-link">📧 soc@nightwatcher.io</a>
+            </li>
+            <li><span class="contact-sub">24/7 Voice & SMS Escalation Ready</span></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Security Hardening</h5>
+          <ul class="footer-links">
+            <li><span class="badge-secure">✓ SSRF Protection Active</span></li>
+            <li><span class="badge-secure">✓ Token Rate Limited</span></li>
+            <li><span class="badge-secure">✓ Salted PBKDF2 Hashing</span></li>
+            <li><span class="badge-secure">✓ CSP & No-Sniff Headers</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>© <span id="copyright-year">2026</span> NightWatcher Autonomous SOC. All rights reserved.</div>
+        <div class="footer-legal-links">
+          <span>MIT License</span>
+          <span>•</span>
+          <span>Zero-Telemetry Architecture</span>
+        </div>
+      </div>
+    </footer>
 
   </div>
 
