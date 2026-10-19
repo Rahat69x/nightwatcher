@@ -204,10 +204,18 @@ async function resolveAlert(alertId) {
   }
 }
 
-// ── Attack Simulator ────────────────────────────────────
+// ── Attack Simulator with Debounce Protection ───────────
+let isSimulating = false;
+
 async function runAttackSim(mode) {
+  if (isSimulating) {
+    showToast('Simulation in progress, please wait...', 'warning');
+    return;
+  }
+  isSimulating = true;
+
   let eventPayload = {};
-  showToast(`⚡ Launching simulated attack: ${mode.replace(/_/g, ' ')}...`);
+  showToast(`⚡ Launching simulated attack: ${mode.replace(/_/g, ' ')}...`, 'info');
 
   if (mode === 'brute_force') {
     eventPayload = {
@@ -276,11 +284,17 @@ async function runAttackSim(mode) {
     });
     const result = await res.json();
     if (res.ok) {
-      showToast(`🚨 Threat Detected: Alert #${result.alert_id} (${result.severity.toUpperCase()})`);
+      showToast(`🚨 Threat Detected: Alert #${result.alert_id} (${result.severity.toUpperCase()})`, 'success');
       fetchDashboardData();
+    } else {
+      showToast(`Simulation rejected: ${result.detail || 'Validation error'}`, 'error');
     }
   } catch (err) {
-    showToast(`Simulation failed: ${err.message}`);
+    showToast(`Simulation failed: ${err.message}`, 'error');
+  } finally {
+    setTimeout(() => {
+      isSimulating = false;
+    }, 500);
   }
 }
 
@@ -600,14 +614,20 @@ function closeModal(event) {
 }
 
 // ── Utilities ───────────────────────────────────────────
-function showToast(msg) {
+function showToast(msg, type = 'success') {
   const container = document.getElementById('toast-container');
+  if (!container) return;
   const toast = document.createElement('div');
-  toast.className = 'toast';
-  toast.textContent = msg;
+  const icon = type === 'error' ? '✕' : (type === 'warning' ? '⚠️' : (type === 'info' ? 'ℹ' : '✓'));
+  toast.className = `toast toast-${type}`;
+  toast.setAttribute('role', 'status');
+  toast.innerHTML = `<span class="toast-icon">${icon}</span> <span class="toast-msg">${escapeHtml(msg)}</span>`;
   container.appendChild(toast);
   setTimeout(() => {
-    toast.remove();
+    toast.classList.add('fade-out');
+    setTimeout(() => {
+      if (toast.parentNode) toast.remove();
+    }, 300);
   }, 3500);
 }
 

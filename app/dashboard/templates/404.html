@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="404 — The requested security resource, alert, or endpoint was not found on NightWatcher.">
+  <title>404 Not Found — NightWatcher</title>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+  <style>
+    .error-container {
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .error-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 48px 40px;
+      max-width: 540px;
+      width: 100%;
+      box-shadow: var(--shadow-lg);
+    }
+    .error-badge {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      padding: 4px 12px;
+      border-radius: 9999px;
+      margin-bottom: 20px;
+    }
+    .error-code {
+      font-size: 5rem;
+      font-weight: 800;
+      line-height: 1;
+      background: linear-gradient(135deg, #38bdf8, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+      letter-spacing: -0.04em;
+    }
+    .error-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--text-primary);
+    }
+    .error-desc {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+    .error-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .error-search {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-subtle);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <header class="top-nav">
+      <a href="/" class="brand" aria-label="NightWatcher Home">
+        <div class="logo-shield">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-title">
+            <span class="brand-name">NIGHTWATCHER</span>
+            <span class="badge-live"><span class="pulse-dot"></span> LIVE ENGINE</span>
+          </div>
+          <div class="brand-sub">Always watching. Loudest when it matters.</div>
+        </div>
+      </a>
+    </header>
+
+    <main class="error-container">
+      <div class="error-card">
+        <div class="error-badge">HTTP 404 • TARGET UNRESOLVED</div>
+        <div class="error-code">404</div>
+        <h1 class="error-title">Security Target Not Found</h1>
+        <p class="error-desc">
+          The requested page, alert ID, or security resource does not exist or has been archived. Check the URL or return to the active incident feed.
+        </p>
+
+        <div class="error-actions">
+          <a href="/" class="btn btn-primary" style="text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
+            🛡️ Return to Live SOC
+          </a>
+          <a href="/docs" class="btn btn-secondary" style="text-decoration:none;">
+            📖 API Documentation
+          </a>
+        </div>
+
+        <div class="error-search">
+          <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Looking for an incident? Search the SOC:</p>
+          <form action="/" method="GET" style="display:flex; gap:8px;">
+            <input type="text" name="q" placeholder="Enter IP, incident ID, or attack type..." class="form-input" style="flex:1;">
+            <button type="submit" class="btn btn-secondary btn-sm">Search</button>
+          </form>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

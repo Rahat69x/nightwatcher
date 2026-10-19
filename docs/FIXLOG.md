@@ -21,7 +21,7 @@ This log tracks every polish phase, baseline tests, git commits, tags, and undo 
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Audit** | Master Audit & Automated Tooling | `polish-audit` | *Pending approval* | `git revert HEAD` | Complete |
 | **Phase A** | Layout, Responsive Overflow & Mobile Navigation | `polish-a` | `99da6b7` | `git revert HEAD` | Complete |
-| **Phase B** | Links, Clickable Contacts & Favicon | `polish-b` | `pending` | `git revert HEAD` | Complete |
-| **Phase C** | Interactive States, Debouncing, Toasts & 404 Page | `polish-c` | *Upcoming* | `git revert HEAD` | Planned |
+| **Phase B** | Links, Clickable Contacts & Favicon | `polish-b` | `e9e6250` | `git revert HEAD` | Complete |
+| **Phase C** | Interactive States, Debouncing, Toasts & 404 Page | `polish-c` | `pending` | `git revert HEAD` | Complete |
 | **Phase D** | Titles, Meta Descriptions, Copyright & Placeholders | `polish-d` | *Upcoming* | `git revert HEAD` | Planned |
 | **Phase E** | Performance, Touch Targets & Mobile Checklist | `polish-e` | *Upcoming* | `git revert HEAD` | Planned |
