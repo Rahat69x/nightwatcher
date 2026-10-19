@@ -921,7 +921,11 @@ textarea:focus, .form-input:focus {
   .btn-demo {
     width: 100%;
     text-align: center;
-    padding: 8px;
+    padding: 10px 14px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .metrics-grid {
     grid-template-columns: 1fr 1fr;
