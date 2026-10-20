@@ -337,6 +337,15 @@
         <div class="metric-value" id="stat-sites">0</div>
         <div class="metric-foot" id="stat-sites-sub">Logins • Uptime • SSL</div>
       </div>
+
+      <div class="metric-card score-card">
+        <div class="metric-header">
+          <span class="metric-title">Security Posture</span>
+          <span class="metric-icon icon-score" id="stat-score-grade">A+</span>
+        </div>
+        <div class="metric-value" id="stat-posture-score">--<span class="score-max" style="font-size: 0.9rem; color: var(--text-muted); font-weight: normal;">/100</span></div>
+        <div class="metric-foot" id="stat-posture-status">Analyzing defenses...</div>
+      </div>
     </section>
 
     <!-- Main Content Navigation Tabs -->
@@ -370,6 +379,12 @@
         </div>
         <div class="search-box">
           <input type="text" id="alert-search-input" placeholder="🔍 Filter alerts by IP, type, keyword..." class="form-input search-input" oninput="handleAlertSearch(this.value)">
+        </div>
+        <div class="action-btn-group">
+          <button class="btn btn-secondary btn-sm export-btn" onclick="exportSecurityReport()" title="Export JSON Forensics & Security Audit Report">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+            Export Audit Report
+          </button>
         </div>
         <div class="feed-status-text" id="feed-last-updated">Auto-refreshed</div>
       </div>

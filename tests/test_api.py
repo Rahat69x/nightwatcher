@@ -97,3 +97,33 @@ async def test_twilio_webhooks():
         )
         assert sms_res.status_code == 200
         assert "NightWatcher Status" in sms_res.text
+
+
+@pytest.mark.asyncio
+async def test_security_posture_score():
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        resp = await client.get("/api/watchers/security-score")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "score" in data
+        assert "grade" in data
+        assert "status" in data
+        assert "recommendations" in data
+        assert 0 <= data["score"] <= 100
+        assert data["grade"] in ("A+", "A", "B", "C", "F")
+
+
+@pytest.mark.asyncio
+async def test_export_security_report():
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        resp = await client.get("/api/alerts/export/report")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "report_id" in data
+        assert "compliance_standards" in data
+        assert "telemetry_summary" in data
+        assert "incidents" in data
+        assert "firewall_blocklist" in data
+        assert "verification_checksum" in data

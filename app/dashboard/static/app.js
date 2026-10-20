@@ -32,14 +32,20 @@ function copyToClipboard(text, label) {
 
 async function fetchDashboardData() {
   try {
-    const [statsRes, alertsRes] = await Promise.all([
+    const [statsRes, alertsRes, scoreRes] = await Promise.all([
       fetch('/api/watchers/system/stats'),
       fetch('/api/alerts/'),
+      fetch('/api/watchers/security-score'),
     ]);
 
     if (statsRes.ok) {
       const stats = await statsRes.json();
       updateStatsUI(stats);
+    }
+
+    if (scoreRes && scoreRes.ok) {
+      const scoreData = await scoreRes.json();
+      updateScoreUI(scoreData);
     }
 
     if (alertsRes.ok) {
@@ -51,6 +57,51 @@ async function fetchDashboardData() {
       `Last sync: ${new Date().toLocaleTimeString()}`;
   } catch (err) {
     console.error('Data sync failed:', err);
+  }
+}
+
+function updateScoreUI(data) {
+  if (!data) return;
+  const scoreEl = document.getElementById('stat-posture-score');
+  const gradeEl = document.getElementById('stat-score-grade');
+  const statusEl = document.getElementById('stat-posture-status');
+
+  if (scoreEl) {
+    scoreEl.innerHTML = `${data.score}<span class="score-max" style="font-size: 0.9rem; color: var(--text-muted); font-weight: normal;">/100</span>`;
+  }
+  if (gradeEl) {
+    gradeEl.textContent = data.grade;
+    gradeEl.style.color = data.badge_color || '#38bdf8';
+  }
+  if (statusEl) {
+    statusEl.textContent = `${data.status} • ${data.recommendations && data.recommendations[0] ? data.recommendations[0] : 'Nominal'}`;
+  }
+}
+
+async function exportSecurityReport() {
+  try {
+    showToast('Generating security audit report...', 'info');
+    const res = await fetch('/api/alerts/export/report');
+    if (!res.ok) throw new Error('Failed to generate report');
+    const data = await res.json();
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const now = new Date();
+    const dateStr = now.toISOString().slice(0, 10);
+    link.href = url;
+    link.download = `nightwatcher-security-audit-${dateStr}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    const total = data.telemetry_summary ? data.telemetry_summary.total_incidents_recorded : 0;
+    showToast(`Audit report downloaded successfully (${total} incidents logged)`, 'success');
+  } catch (err) {
+    console.error('Export report error:', err);
+    showToast('Failed to export security report', 'error');
   }
 }
 

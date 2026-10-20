@@ -266,3 +266,88 @@ async def get_system_stats(db: AsyncSession = Depends(get_db)):
         "total_events": total_events,
         "server_time": now.isoformat(),
     }
+
+
+@router.get("/security-score")
+async def get_security_posture_score(db: AsyncSession = Depends(get_db)):
+    """
+    Calculate dynamic Security Posture Score (0-100) based on active incidents,
+    automated firewall blocks, monitored endpoints health, and resolution velocity.
+    """
+    all_alerts_res = await db.execute(select(Alert))
+    all_alerts = all_alerts_res.scalars().all()
+
+    unresolved_critical = len([
+        a for a in all_alerts
+        if a.severity.value == "critical" and a.status in (AlertStatus.NEW, AlertStatus.NOTIFIED)
+    ])
+    unresolved_high = len([
+        a for a in all_alerts
+        if a.severity.value == "high" and a.status in (AlertStatus.NEW, AlertStatus.NOTIFIED)
+    ])
+    resolved_count = len([
+        a for a in all_alerts
+        if a.status in (AlertStatus.RESOLVED, AlertStatus.ACKNOWLEDGED)
+    ])
+
+    blocked_res = await db.execute(select(BlockedIP).where(BlockedIP.active == True))
+    active_blocks = len(blocked_res.scalars().all())
+
+    sites_res = await db.execute(select(WatchedSite).where(WatchedSite.active == True))
+    sites = sites_res.scalars().all()
+    failed_sites = len([s for s in sites if s.consecutive_failures > 0])
+
+    # Dynamic Posture Scoring
+    base_score = 100
+    deductions = (unresolved_critical * 20) + (unresolved_high * 10) + (failed_sites * 15)
+    bonuses = min(15, active_blocks * 3)
+
+    raw_score = max(15, min(100, base_score - deductions + bonuses))
+
+    if raw_score >= 95:
+        grade = "A+"
+        status = "Optimal"
+        badge_color = "#38bdf8"
+    elif raw_score >= 85:
+        grade = "A"
+        status = "Strong"
+        badge_color = "#22c55e"
+    elif raw_score >= 70:
+        grade = "B"
+        status = "Guarded"
+        badge_color = "#eab308"
+    elif raw_score >= 50:
+        grade = "C"
+        status = "Elevated Risk"
+        badge_color = "#f97316"
+    else:
+        grade = "F"
+        status = "Critical Exposure"
+        badge_color = "#ef4444"
+
+    recommendations = []
+    if unresolved_critical > 0:
+        recommendations.append(f"Acknowledge or resolve {unresolved_critical} critical incident(s) immediately.")
+    if failed_sites > 0:
+        recommendations.append(f"Inspect {failed_sites} failing monitored endpoint(s).")
+    if active_blocks == 0 and len(all_alerts) > 0:
+        recommendations.append("Review auto-blocklist policies to isolate malicious source IPs.")
+    if not recommendations:
+        recommendations.append("All defensive systems nominal. Zero unhandled high-risk breaches.")
+
+    return {
+        "score": raw_score,
+        "grade": grade,
+        "status": status,
+        "badge_color": badge_color,
+        "breakdown": {
+            "unresolved_critical": unresolved_critical,
+            "unresolved_high": unresolved_high,
+            "active_blocks": active_blocks,
+            "monitored_sites_total": len(sites),
+            "monitored_sites_failed": failed_sites,
+            "total_incidents_resolved": resolved_count,
+        },
+        "recommendations": recommendations,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
