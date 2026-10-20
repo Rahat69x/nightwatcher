@@ -32,7 +32,10 @@ def check_endpoint(url: str):
     try:
         req = urllib.request.Request(
             url,
-            headers={"User-Agent": "NightWatcher-LinkAuditor/1.0"}
+            headers={
+                "User-Agent": "NightWatcher-LinkAuditor/1.0",
+                "X-Simulated-IP": "10.0.0.99",
+            }
         )
         with urllib.request.urlopen(req, timeout=5) as response:
             return response.status, "OK"

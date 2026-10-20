@@ -63,6 +63,14 @@ async def unblock_expired_ips(db: AsyncSession) -> int:
     return len(expired)
 
 
+def _ensure_utc(dt: Optional[datetime]) -> Optional[datetime]:
+    if dt is None:
+        return None
+    if dt.tzinfo is None:
+        return dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(timezone.utc)
+
+
 async def is_ip_blocked(db: AsyncSession, ip: str) -> bool:
     """Check blocklist — used by the demo login app."""
     result = await db.execute(
@@ -73,7 +81,8 @@ async def is_ip_blocked(db: AsyncSession, ip: str) -> bool:
     )
     entry = result.scalar_one_or_none()
     if entry and entry.expires_at:
-        if entry.expires_at < datetime.now(timezone.utc):
+        exp = _ensure_utc(entry.expires_at)
+        if exp and exp < datetime.now(timezone.utc):
             entry.active = False
             await db.commit()
             return False
