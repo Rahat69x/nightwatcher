@@ -163,8 +163,9 @@ Checks:
 }
 ```
 
-### Alert Triage
+### Alert Triage & Forensics
 - `GET /api/alerts/` — List alerts with optional `?status=` and `?severity=` filters.
+- `GET /api/alerts/export/report` — Export structured JSON Incident Forensics & Security Audit Report (SOC 2 / ISO 27001 compliance trail).
 - `POST /api/alerts/{id}/acknowledge` — Human acknowledgement stops the escalation timer.
 - `POST /api/alerts/{id}/block-ip` — Manually block the source IP across all systems.
 - `POST /api/alerts/{id}/resolve` — Mark incident resolved.
@@ -176,7 +177,8 @@ Checks:
 - `POST /api/twilio/sms-reply` — Handles incoming SMS commands (`ACK`, `BLOCK`, `STATUS`).
 - `POST /api/watchers/telegram/webhook` — Handles Telegram inline button callbacks.
 
-### Watcher Tool APIs
+### Watcher Tool & Compliance APIs
+- `GET /api/watchers/security-score` — Live Security Posture Score (0–100), letter grade (A+ to F), and recommendations.
 - `POST /api/watchers/website/check` — On-demand uptime, SSL expiry, and header scan.
 - `POST /api/watchers/phishing/check` — URL and message phishing risk analysis.
 - `POST /api/watchers/breach/check-password` — k-Anonymity password exposure check.
